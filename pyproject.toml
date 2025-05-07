@@ -1,12 +1,16 @@
 [project]
 name = "unknownpixels"
-version = "0.1.0"
-description = "Convert images into Joy Division-style waveform art."
+
+# Dynamic version numbers from git
+dynamic = ["version"]
+
+description = "Convert images into Unknown Pleasures-style waveform art."
 authors = [
-    { name="Will Roper", email="w.roper@sussex.ac.uk" }
+    { name="Will Roper", email="w.roper@sussex.ac.uk"},
+    { name="Stephen Wilkins", email="s.wilkins@sussex.ac.uk"},
 ]
 readme = "README.md"
-license = { text = "GNU General Public License v3.0" }
+license = {file = "LICENSE.md"}
 requires-python = ">=3.8"
 dependencies = [
     "numpy",
@@ -23,7 +27,7 @@ dev = [
 ]
 
 [project.scripts]
-unknownpixels = "unknownpixels.unknownpixels:render"
+unknown-pixels = "unknownpixels.unknownpixels:render"
 
 
 
@@ -39,6 +43,9 @@ build-backend = "setuptools.build_meta"
 
 # Make a version file at build time
 version_file = "src/unknownpixels/_version.py"
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 # Configure the linter and formatter
 [tool.ruff]
