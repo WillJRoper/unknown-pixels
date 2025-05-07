@@ -57,7 +57,7 @@ This will process the input image and automatically show the waveform representa
 Example:
 
 ```bash
-unknown-pixels -i path/to/image.jpg -n 50 -t Joy Division -c 10
+unknown-pixels -i path/to/image.jpg -n 50 -t "Joy Division" -c 10
 ```
 
 ## License
