@@ -225,6 +225,9 @@ class UnknownPixels:
             order=3,
         )
 
+        # Flip vertically to keep top of image at top of plot
+        data = np.flipud(data)
+
         # Create new Figure with black background
         fig = plt.figure(figsize=figsize, facecolor="black")
 
