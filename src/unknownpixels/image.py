@@ -1,4 +1,36 @@
-"""A module for manipulating the image and converting it to a waveform representation."""
+"""A module for manipulating the image and converting it to a waveform.
+
+This module contains the UnknownPixels class, which is used to convert an
+image to a waveform representation. The class provides methods for
+smoothing the image, padding it to a square shape, and plotting the
+waveform representation. It also provides a method for plotting the image
+in the style of Unknown Pleasures, a famous album by Joy Division.
+
+This is mostly a helper class wrapping PIL and mattplotlib to simplify the
+process of converting an image to a waveform representation.
+
+Example usage:
+
+    from unknownpixels.image import UnknownPixels
+
+    # Create an instance of the UnknownPixels class
+    img = UnknownPixels("path/to/image.png")
+
+    # Smooth the image
+    img.smooth_image(5)
+
+    # Plot the image in the style of Unknown Pleasures
+    img.plot_unknown_pleasures(
+        contrast=10,
+        vmax=None,
+        vmin=None,
+        nlines=50,
+        figsize=(8, 8),
+        title="My Title",
+        outpath="output.png",
+        log=False,
+    )
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +40,24 @@ from scipy.ndimage import zoom
 
 
 class UnknownPixels:
-    """A class for converting an image to a waveform representation."""
+    """A class for converting an image to a waveform representation.
+
+    This class provides methods for smoothing the image, padding it to a
+    square shape, and plotting the waveform representation. It also provides
+    a method for plotting the image in the style of Unknown Pleasures, a
+    famous album by Joy Division.
+
+    Note that the image will always be converted to grayscale and padded to a
+    square shape without distortion. The result of this can be seen using the
+    `show` method.
+
+    Attributes:
+        imgpath (str): The path to the image file.
+        img (PIL.Image): The image object.
+        shape (tuple): The shape of the image.
+        arr (np.ndarray): The image as a numpy array.
+
+    """
 
     def __init__(self, imgpath):
         """Intialise the object and prepare the image for rendering.
@@ -38,7 +87,7 @@ class UnknownPixels:
 
     @property
     def arr(self):
-        """Get the image as a normalized numpy array.
+        """Get the image as a numpy array.
 
         Returns:
             np.ndarray: The image as a normalized numpy array.

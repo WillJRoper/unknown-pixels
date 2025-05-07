@@ -12,6 +12,28 @@ The input file can be any format PIL supports:
     - TIFF
     - WEBP
 
+Command line arguments:
+
+    -i, --input: Path to the input image file.
+    -o, --output: Path to the output file. If not specified, the output will
+        be saved to the same directory as the input file with a .png
+        extension.
+    -n, --nlines: Number of lines to render along the y-axis. Default is 50.
+    -f, --figsize: Size of the figure to create. Default is (8, 8).
+    -t, --title: Title to add to the image. Default is no title.
+    -p, --preview: Show a preview of the input image after some processing.
+    -l, --log: Whether to log scale the input image. Default is False.
+    -v, --vmax: Maximum value to use for the image. Default is None.
+    -V, --vmin: Minimum value to use for the image. Default is None.
+    -c, --contrast: The contrast defining the height of the peaks in the
+        waveform. A contrast of 5 will place the maximum peak 5 lines above
+        the flat minimum value. Default is 10.
+    -r, --smooth: Radius of the Gaussian smoothing kernel. Default is None.
+    -h, --help: Show this help message and exit.
+
+Example usage:
+
+    unknown-pixels -i input.png -o output.png -n 50 -f 10 10 -T "My Title"
 
 """
 
@@ -24,12 +46,10 @@ from unknownpixels.image import UnknownPixels
 def render():
     """Render the image to a waveform representation.
 
-    This function is the main entry point for the Unknown Pixels project. It
+    This function is the main entry point for Unknown Pixels. It
     takes an input image file, converts it to a waveform representation, and
-    saves it to a file.
-
-    Returns:
-        None
+    shows the resulting plot. (With optional smoothing, log scaling, and
+    saving to a file.)
     """
     # Set up the argument parser
     parser = argparse.ArgumentParser(
@@ -51,7 +71,7 @@ def render():
     )
     parser.add_argument(
         "--nlines",
-        "-t",
+        "-n",
         type=int,
         help="Number of lines to render along the y-axis.",
         default=50,
@@ -66,7 +86,7 @@ def render():
     )
     parser.add_argument(
         "--title",
-        "-T",
+        "-t",
         type=str,
         help="Title to add to the image, default is no title.",
         default="",
