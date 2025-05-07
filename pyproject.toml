@@ -1,0 +1,124 @@
+[project]
+name = "unknownpixels"
+version = "0.1.0"
+description = "Convert images into Joy Division-style waveform art."
+authors = [
+    { name="Will Roper", email="w.roper@sussex.ac.uk" }
+]
+readme = "README.md"
+license = { text = "GNU General Public License v3.0" }
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "Pillow"
+]
+
+# Optional dependencies for specific use cases
+[project.optional-dependencies]
+# Development
+dev = [
+    "ruff==0.11.7",
+    "pre-commit",
+]
+
+[project.scripts]
+unknownpixels = "unknownpixels.unknownpixels:render"
+
+
+
+# Set up the build system
+[build-system]
+
+# Use latest setuotools, setuptools_scm for git versioning and
+# numpy (numpy includes are needed for compilation of C extensions)
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+# Make a version file at build time
+version_file = "src/unknownpixels/_version.py"
+
+# Configure the linter and formatter
+[tool.ruff]
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    ".DS_Store",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".pre-commit-config.yaml",
+    "*__init__.py"  # ignore all init files
+]
+
+# PEP-8 line length
+line-length = 79
+indent-width = 4
+
+
+# Assume Python 3.8 by default regardless
+target-version = "py38"
+
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "D"]
+ignore = [
+       "E402",  # "module level import not at top of file" (isolate C imports in case python alternatives exist)
+       "F811",  # "redefinition of unused name from line N" (breaks quantity objects)
+       ]
+
+
+# Sort imports alphabetically
+extend-select = ["I"]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# For every .py under examples/, ignore all D-rules
+"examples/**/*.py" = ["D"]
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
