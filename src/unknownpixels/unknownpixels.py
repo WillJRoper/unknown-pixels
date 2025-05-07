@@ -50,18 +50,11 @@ def render():
         default=None,
     )
     parser.add_argument(
-        "--target-lines",
+        "--nlines",
         "-t",
         type=int,
         help="Number of lines to render along the y-axis.",
         default=50,
-    )
-    parser.add_argument(
-        "--contrast",
-        "-c",
-        type=float,
-        help="Contrast of the image.",
-        default=10,
     )
     parser.add_argument(
         "--figsize",
@@ -84,16 +77,58 @@ def render():
         action="store_true",
         help="Show a preview of the input image after some processing.",
     )
+    parser.add_argument(
+        "--log",
+        "-l",
+        action="store_true",
+        help="Whether to log scale the input image.",
+    )
+    parser.add_argument(
+        "--vmax",
+        "-v",
+        type=float,
+        help="Maximum value to use for the image.",
+        default=None,
+    )
+    parser.add_argument(
+        "--vmin",
+        "-V",
+        type=float,
+        help="Minimum value to use for the image.",
+        default=None,
+    )
+    parser.add_argument(
+        "--contrast",
+        "-c",
+        type=float,
+        help=(
+            "The contrast defining the height of the peaks in the waveform. "
+            "A contrast of 5 will place the maximum peak 5 lines above the "
+            "flat minimum value."
+        ),
+        default=10,
+    )
+    parser.add_argument(
+        "--smooth",
+        "-r",
+        type=float,
+        help="Radius of the Gaussian smoothing kernel.",
+        default=None,
+    )
 
     # Parse the command-line arguments and unpack some for convenience
     args = parser.parse_args()
     input_file = args.input
     output_file = args.output
+    nlines = args.nlines
     preview = args.preview
-    target_lines = args.target_lines
-    contrast = args.contrast
     figsize = args.figsize
     title = args.title
+    log = args.log
+    vmax = args.vmax
+    vmin = args.vmin
+    contrast = args.contrast
+    smooth_radius = args.smooth
 
     # Check if the input file exists
     if not os.path.exists(input_file):
@@ -127,10 +162,8 @@ def render():
         )
 
     # Check if the target lines is a positive integer
-    if not isinstance(target_lines, int) or target_lines <= 0:
-        raise ValueError(
-            f"Target lines '{target_lines}' is not a positive integer."
-        )
+    if not isinstance(nlines, int) or nlines <= 0:
+        raise ValueError(f"Target lines '{nlines}' is not a positive integer.")
 
     # Create an instance of the UnknownPixels class
     up = UnknownPixels(input_file)
@@ -139,11 +172,18 @@ def render():
     if preview:
         up.show()
 
+    # If the smooth radius is set smooth the image
+    if smooth_radius is not None:
+        up.smooth_image(smooth_radius)
+
     # Render the image to a waveform representation
     up.plot_unknown_pleasures(
         contrast=contrast,
-        target_lines=target_lines,
+        vmax=vmax,
+        vmin=vmin,
+        nlines=nlines,
         figsize=figsize,
         title=title,
-        output_file=output_file,
+        outpath=output_file,
+        log=log,
     )

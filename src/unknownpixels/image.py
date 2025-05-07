@@ -27,9 +27,6 @@ class UnknownPixels:
         # Make the image square without distortion
         self._pad_to_square()
 
-        # Attribute to store the resulting lines
-        self.waveform = None
-
     @property
     def shape(self):
         """Get the shape of the image.
@@ -48,11 +45,6 @@ class UnknownPixels:
         """
         # Convert the image to a numpy array
         arr = np.array(self.img, dtype=np.float64)
-
-        # Normalize the image to [0, 1]
-        vmax = arr.max()
-        arr = np.clip(arr, 0, vmax) / vmax
-
         return arr
 
     def smooth_image(self, rad):
@@ -86,12 +78,8 @@ class UnknownPixels:
 
         return ImageOps.expand(self.img, border=padding, fill=(0, 0, 0))
 
-    def show(self, arr, target_lines):
+    def show(self):
         """Plot the image as a waveform representation.
-
-        Args:
-            arr (np.ndarray): The image as a numpy array.
-            target_lines (int): The number of lines to render along the y-axis.
 
         Returns:
             np.ndarray: The waveform representation of the image.
@@ -101,7 +89,7 @@ class UnknownPixels:
         ax.set_axis_off()
 
         # Plot the image
-        ax.imshow(arr, cmap="gray", aspect="auto")
+        ax.imshow(self.arr, cmap="gray", aspect="auto")
 
         # Show the plot
         plt.show()
@@ -111,11 +99,14 @@ class UnknownPixels:
 
     def plot_unknown_pleasures(
         self,
-        contrast=10,
-        target_lines=50,
-        figsize=(8, 8),
-        title="",
-        outpath=None,
+        contrast,
+        vmax,
+        vmin,
+        nlines,
+        figsize,
+        title,
+        outpath,
+        log,
     ):
         """Plot the image in the style of Unknown Pleasures.
 
@@ -127,40 +118,55 @@ class UnknownPixels:
 
         Args:
             contrast (float):
-                The contrast, i.e. the maximum value in the image.
-            target_lines (int):
-                The target number of individual lines to use.
+                The contrast to apply to the image. This is the hieght of the
+                peaks in the waveform (i.e. the difference in nlines units
+                between vmin and vmax). A contrast of 5 will place the maximum
+                peak 5 lines above the flat minimum value.
+            vmax (float):
+                The maximum value to use for the image. If None the maximum
+                value in the image is used.
+            vmin (float):
+                The minimum value to use for the image. If None the minimum
+                value in the image is used.
+            nlines (int):
+                The number of individual lines to use along the y-axis.
             figsize (tuple):
                 The size of the figure to create.
             title (str):
                 The title to add to the image. If None no title is added.
             outpath (str):
                 The path to save the image to. If None no image is saved.
+            log (bool):
+                Whether to log scale the input image. Default is False.
         """
         # Extract data
         data = self.arr
 
-        # Normalise to the maximum and take the log10
-        data /= np.max(data)
-        data = np.log10(data)
+        # define vmin and vmax
+        vmax = np.max(data) if vmax is None else vmax
+        vmin = np.min(data) if vmin is None else vmin
 
-        # Set any -np.inf values to zero (once renormalised)
-        data[data == -np.inf] = -np.log10(contrast)
+        # Are we doing log scaling?
+        if log:
+            # We are, do the log scaling
+            data = np.log10(data)
 
-        # Define normalising function
-        norm = Normalize(vmin=-np.log10(contrast), vmax=0.0)
+            # Log scale vmin and vmax
+            vmin = np.log10(vmin)
+            vmax = np.log10(vmax)
+
+            # Set any -np.inf values to zero (once renormalised)
+            data[data == -np.inf] = vmin
+
+            # Define normalising function
+            norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
+
+        else:
+            # No log scaling, just normalise
+            norm = Normalize(vmin=vmin, vmax=vmax, clip=True)
 
         # Normalise data
-        data = norm(data) * 5
-
-        # Set any data <0.0 to zero
-        data[data < 0.0] = 0.0
-
-        # Unknown Pleasures works best with about 50 lines so reshape the data
-        # to have approximately 50 lines.
-
-        # Calcualate the eventual number of lines.
-        nlines = int(data.shape[0] / (data.shape[0] // target_lines))
+        data = norm(data) * contrast
 
         # Resample the data to have the same x resolution but nlines y
         # resolution.
@@ -214,13 +220,14 @@ class UnknownPixels:
             )
 
         # Save the figure
-        plt.savefig(
-            outpath,
-            dpi=300,
-            bbox_inches="tight",
-            facecolor="black",
-            edgecolor="none",
-        )
+        if outpath is not None:
+            fig.savefig(
+                outpath,
+                dpi=300,
+                bbox_inches="tight",
+                facecolor="black",
+                edgecolor="none",
+            )
 
         # Show the plot
         plt.show()
