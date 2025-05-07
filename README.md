@@ -2,7 +2,7 @@
 
 **unknown-pixels** is a simple Python command-line tool that transforms images into waveform art reminiscent of Joy Division's _Unknown Pleasures_ album cover.
 
-Unknown-pixels first converts the input image to grayscale, then (if necessary) it will pad the image along the smallest axis to make the image square. It then slices the image into `nlines` horizontal slices and renders each slice as a stylized "waveform", creating a unique visual representation of the original image.
+Unknown-pixels first converts the input image to grayscale, then (if necessary) it will pad the image along the smallest axis to make the image square. It then slices the image into `nlines` horizontal slices and renders each slice as a stylised "waveform", creating a unique visual representation of the original image.
 
 ## Installation
 
@@ -28,22 +28,22 @@ After installation, use the `unknown-pixels` command:
 unknown-pixels --input path/to/image.jpg
 ```
 
-Which will process the input image and automatically show the waveform representation of the image.
+This will process the input image and automatically show the waveform representation of the image.
 
 ### Options
 
-- '-i', ''--input'': Path to the input image file. This image can be in any PIL compatible format.
-- '-o', '--output': [Optional] Path to the output file. If not specified, the output will be saved to the same directory as the input file with a .png extension.
-- '-n', '--nlines': [Optional] Number of lines to render along the y-axis. Default is 50.
-- '-f', '--figsize': [Optional] Size of the figure to create. Default is (8, 8).
-- '-t', '--title': [Optional] Title to add to the image. Default is no title.
-- '-p', '--preview': [Optional] Show a preview of the input image after some processing.
-- '-l', '--log': [Optional] Whether to log scale the input image. Default is False.
-- '-v', '--vmax': [Optional] Maximum value to use for the image. Default is None.
-- '-V', '--vmin': [Optional] Minimum value to use for the image. Default is None.
-- '-c', '--contrast': [Optional] The contrast defining the height of the peaks in the waveform. A contrast of 5 will place the maximum peak 5 lines above the flat minimum value. Default is 10.
-- '-r', '--smooth': [Optional] Radius of the Gaussian smoothing kernel. Default is None.
-- '-h', '--help': Show a help message and exit.
+- `-i`, `--input`: Path to the input image file. This image can be in any PIL-compatible format.
+- `-o`, `--output`: [Optional] Path to the output file. If not specified, the output will be saved to the same directory as the input file with a .png extension.
+- `-n`, `--nlines`: [Optional] Number of lines to render along the y-axis. Default is 50.
+- `-f`, `--figsize`: [Optional] Size of the figure to create. Default is (8, 8).
+- `-t`, `--title`: [Optional] Title to add to the image. Default is no title.
+- `-p`, `--preview`: [Optional] Show a preview of the input image after some processing.
+- `-l`, `--log`: [Optional] Whether to log scale the input image. Default is False.
+- `-v`, `--vmax`: [Optional] Maximum value to use for the image. Default is None.
+- `-V`, `--vmin`: [Optional] Minimum value to use for the image. Default is None.
+- `-c`, `--contrast`: [Optional] The contrast defining the height of the peaks in the waveform. A contrast of 5 will place the maximum peak 5 lines above the flat minimum value. Default is 10.
+- `-r`, `--smooth`: [Optional] Radius of the Gaussian smoothing kernel. Default is None.
+- `--help`: Show a help message and exit.
 
 Example:
 
