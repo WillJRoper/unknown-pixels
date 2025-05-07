@@ -1,5 +1,8 @@
 # unknown-pixels
 
+![UnknownPixelsDemo 001](https://github.com/user-attachments/assets/7ff13ecf-b54b-4eca-98ac-dc0955631e73)
+
+
 **unknown-pixels** is a simple Python command-line tool that transforms images into waveform art reminiscent of Joy Division's _Unknown Pleasures_ album cover.
 
 Unknown-pixels first converts the input image to grayscale, then (if necessary) it will pad the image along the smallest axis to make the image square. It then slices the image into `nlines` horizontal slices and renders each slice as a stylised "waveform", creating a unique visual representation of the original image.
