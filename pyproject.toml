@@ -26,6 +26,11 @@ dev = [
     "pre-commit",
 ]
 
+# Testing 
+test = [
+    "pytest",
+]
+
 [project.scripts]
 unknown-pixels = "unknownpixels.unknownpixels:render"
 
@@ -116,6 +121,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 # For every .py under examples/, ignore all D-rules
 "examples/**/*.py" = ["D"]
+"tests/**/*.py" = ["D"]
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
