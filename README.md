@@ -1,6 +1,10 @@
 # unknown-pixels
 
-![UnknownPixelsDemo 001](https://github.com/user-attachments/assets/7ff13ecf-b54b-4eca-98ac-dc0955631e73)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a57ab1dc-eb40-4716-8c13-ed03db5d965c" alt="Input" width="30%" />
+  <img src="https://github.com/user-attachments/assets/0fb9b396-2e40-4e47-8647-7e88c63b4dd5" alt="UP" width="30%" />
+  <img src="https://github.com/user-attachments/assets/2c223958-316d-4985-bbf3-abf1fa2929b7" alt="UP_Perspective" width="30%" />
+</p>
 
 
 **unknown-pixels** is a simple Python command-line tool that transforms images into waveform art reminiscent of Joy Division's _Unknown Pleasures_ album cover.
@@ -46,6 +50,8 @@ This will process the input image and automatically show the waveform representa
 - `-V`, `--vmin`: [Optional] Minimum value to use for the image. Default is None.
 - `-c`, `--contrast`: [Optional] The contrast defining the height of the peaks in the waveform. A contrast of 5 will place the maximum peak 5 lines above the flat minimum value. Default is 10.
 - `-r`, `--smooth`: [Optional] Radius of the Gaussian smoothing kernel. Default is None.
+- `-P`, `--perspective`: [Optional] Add a false perspective effect. Default False.
+- `--version`: Print the current version.
 - `--help`: Show a help message and exit.
 
 Example:
