@@ -163,6 +163,8 @@ def render():
         ".gif",
         ".tiff",
         ".webp",
+        ".tif",
+        ".svg",
     ]
     if not any(
         input_file.lower().endswith(ext) for ext in valid_image_formats
