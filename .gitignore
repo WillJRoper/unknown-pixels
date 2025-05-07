@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Apple specific files
+*.DS_Store 
+
+# Version file 
+*_version.py
