@@ -156,13 +156,14 @@ class UnknownPixels:
         title,
         outpath,
         log,
+        perspective,
     ):
         """Plot the image in the style of Unknown Pleasures.
 
         Creates a representation of an image similar in style to Joy
         Division's seminal 1979 album Unknown Pleasures.
 
-        Borrows some code from this matplotlib examples:
+        Adapts some code from this matplotlib examples:
         https://matplotlib.org/stable/gallery/animation/unchained.html
 
         Args:
@@ -187,6 +188,9 @@ class UnknownPixels:
                 The path to save the image to. If None no image is saved.
             log (bool):
                 Whether to log scale the input image. Default is False.
+            perspective (bool):
+                Whether to add a false perspective effect to the image.
+                Default is False.
         """
         # Extract data
         data = self.arr
@@ -240,11 +244,20 @@ class UnknownPixels:
         # Generate line plots
         lines = []
         for i in range(data.shape[0]):
-            # Small reduction of the X extents to get a cheap perspective
-            # effect.
-            xscale = 1 - i / 100.0
-            # Same for linewidth (thicker strokes on bottom)
-            lw = 1.5 - i / 100.0
+            # Are we doing the false perspective effect?
+            if perspective:
+                # Small reduction of the X extents to get a cheap perspective
+                # effect
+                xscale = 1 - i / (nlines * 2.0)
+
+                # Same for linewidth (thicker strokes on bottom)
+                lw = 1.5 - i / (nlines * 2.0)
+
+            else:
+                # No perspective, just use the full x range and a constant
+                # linewidth
+                xscale = 1
+                lw = 1.5
 
             (line,) = ax.plot(xscale * X, i + data[i], color="w", lw=lw)
             lines.append(line)
@@ -258,13 +271,8 @@ class UnknownPixels:
 
         # Add title
         if len(title) > 0:
-            ax.text(
-                0.5,
-                0.8,
+            ax.set_title(
                 title,
-                transform=ax.transAxes,
-                ha="center",
-                va="bottom",
                 color="w",
                 family="sans-serif",
                 fontweight="light",
