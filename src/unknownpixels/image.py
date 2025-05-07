@@ -74,7 +74,7 @@ class UnknownPixels:
         self.img = self.img.convert("L")
 
         # Make the image square without distortion
-        self._pad_to_square()
+        self.img = self._pad_to_square()
 
     @property
     def shape(self):
@@ -125,7 +125,7 @@ class UnknownPixels:
         else:
             padding = ((height - width) // 2, 0, (height - width + 1) // 2, 0)
 
-        return ImageOps.expand(self.img, border=padding, fill=(0, 0, 0))
+        return ImageOps.expand(self.img, border=padding, fill=0)
 
     def show(self):
         """Plot the image as a waveform representation.

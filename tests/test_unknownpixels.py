@@ -3,11 +3,18 @@
 import os
 import tempfile
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pytest
 from PIL import Image
 
 from unknownpixels.image import UnknownPixels
+
+
+@pytest.fixture(autouse=True)
+def suppress_plot_show(monkeypatch):
+    """Suppress plt.show() during tests to avoid displaying plots."""
+    monkeypatch.setattr(plt, "show", lambda: None)
 
 
 @pytest.fixture
