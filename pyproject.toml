@@ -1,5 +1,5 @@
 [project]
-name = "unknownpixels"
+name = "unknown-pixels"
 
 # Dynamic version numbers from git
 dynamic = ["version"]
