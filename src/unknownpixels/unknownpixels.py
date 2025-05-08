@@ -40,6 +40,7 @@ Example usage:
 import argparse
 import os
 
+from unknownpixels._version import __version__
 from unknownpixels.image import UnknownPixels
 
 
@@ -135,6 +136,18 @@ def render():
         help="Radius of the Gaussian smoothing kernel.",
         default=None,
     )
+    parser.add_argument(
+        "--perspective",
+        "-P",
+        action="store_true",
+        help="Whether to add a false perspective effect to the image.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
+        help="Show the version number and exit.",
+    )
 
     # Parse the command-line arguments and unpack some for convenience
     args = parser.parse_args()
@@ -149,6 +162,7 @@ def render():
     vmin = args.vmin
     contrast = args.contrast
     smooth_radius = args.smooth
+    perspective = args.perspective
 
     # Check if the input file exists
     if not os.path.exists(input_file):
@@ -209,4 +223,5 @@ def render():
         title=title,
         outpath=output_file,
         log=log,
+        perspective=perspective,
     )
