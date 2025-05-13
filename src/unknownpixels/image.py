@@ -157,6 +157,7 @@ class UnknownPixels:
         outpath,
         log,
         perspective,
+        linewidth,
     ):
         """Plot the image in the style of Unknown Pleasures.
 
@@ -191,6 +192,8 @@ class UnknownPixels:
             perspective (bool):
                 Whether to add a false perspective effect to the image.
                 Default is False.
+            linewidth (float):
+                The width of the lines in the plot. Default is 1.5.
         """
         # Extract data
         data = self.arr
@@ -251,13 +254,13 @@ class UnknownPixels:
                 xscale = 1 - i / (nlines * 2.0)
 
                 # Same for linewidth (thicker strokes on bottom)
-                lw = 1.5 - i / (nlines * 2.0)
+                lw = linewidth - i / (nlines * 2.0)
 
             else:
                 # No perspective, just use the full x range and a constant
                 # linewidth
                 xscale = 1
-                lw = 1.5
+                lw = linewidth
 
             (line,) = ax.plot(xscale * X, i + data[i], color="w", lw=lw)
             lines.append(line)
