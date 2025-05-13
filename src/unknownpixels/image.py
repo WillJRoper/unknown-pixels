@@ -152,7 +152,7 @@ class UnknownPixels:
         vmax,
         vmin,
         nlines,
-        figsize,
+        aspect,
         title,
         outpath,
         log,
@@ -181,8 +181,9 @@ class UnknownPixels:
                 value in the image is used.
             nlines (int):
                 The number of individual lines to use along the y-axis.
-            figsize (tuple):
-                The size of the figure to create.
+            aspect (float):
+                The aspect ratio of the image. This is the ratio of the width
+                to the height of the image.
             title (str):
                 The title to add to the image. If None no title is added.
             outpath (str):
@@ -193,7 +194,7 @@ class UnknownPixels:
                 Whether to add a false perspective effect to the image.
                 Default is False.
             linewidth (float):
-                The width of the lines in the plot. Default is 1.5.
+                The width of the lines in the plot.
         """
         # Extract data
         data = self.arr
@@ -236,7 +237,7 @@ class UnknownPixels:
         data = np.flipud(data)
 
         # Create new Figure with black background
-        fig = plt.figure(figsize=figsize, facecolor="black")
+        fig = plt.figure(figsize=(6, 6 * aspect), facecolor="black")
 
         # Add a subplot with no frame
         ax = fig.add_subplot(111, frameon=False)
@@ -281,8 +282,8 @@ class UnknownPixels:
             )
             lines.append(line)
 
-        # Set y limit (or first line is cropped because of thickness)
-        ax.set_ylim(-20, nlines + 20)
+        # # Set y limit (or first line is cropped because of thickness)
+        # ax.set_ylim(-2, nlines + 2)
 
         # No ticks
         ax.set_xticks([])
@@ -295,13 +296,14 @@ class UnknownPixels:
                 color="w",
                 family="sans-serif",
                 fontweight="light",
-                fontsize=16,
+                fontsize=12,
             )
 
         # Save the figure
         if outpath is not None:
             fig.savefig(
                 outpath,
+                format=outpath.split(".")[-1],
                 dpi=300,
                 bbox_inches="tight",
                 facecolor="black",

@@ -15,7 +15,8 @@ requires-python = ">=3.8"
 dependencies = [
     "numpy",
     "matplotlib",
-    "Pillow"
+    "Pillow",
+    "scipy",
 ]
 
 # Optional dependencies for specific use cases
