@@ -262,7 +262,23 @@ class UnknownPixels:
                 xscale = 1
                 lw = linewidth
 
-            (line,) = ax.plot(xscale * X, i + data[i], color="w", lw=lw)
+            # Plot a black "face" to the line
+            ax.fill_between(
+                xscale * X,
+                i * np.ones_like(X),
+                i + data[i],
+                color="k",
+                zorder=-i,
+            )
+
+            # Plot the line itself
+            (line,) = ax.plot(
+                xscale * X,
+                i + data[i],
+                color="w",
+                lw=lw,
+                zorder=-i,
+            )
             lines.append(line)
 
         # Set y limit (or first line is cropped because of thickness)
