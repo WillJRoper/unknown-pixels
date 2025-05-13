@@ -242,9 +242,6 @@ class UnknownPixels:
         # Add a subplot with no frame
         ax = fig.add_subplot(111, frameon=False)
 
-        # Set the aspect ratio
-        ax.set_aspect(aspect)
-
         # Create the x axis
         X = np.linspace(-1, 1, data.shape[-1])
 
@@ -285,8 +282,8 @@ class UnknownPixels:
             )
             lines.append(line)
 
-        # Set y limit (or first line is cropped because of thickness)
-        ax.set_ylim(-20, nlines + 20)
+        # # Set y limit (or first line is cropped because of thickness)
+        # ax.set_ylim(-2, nlines + 2)
 
         # No ticks
         ax.set_xticks([])
@@ -299,7 +296,7 @@ class UnknownPixels:
                 color="w",
                 family="sans-serif",
                 fontweight="light",
-                fontsize=16,
+                fontsize=12,
             )
 
         # Save the figure

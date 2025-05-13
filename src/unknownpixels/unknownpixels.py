@@ -85,7 +85,7 @@ def render():
         "-a",
         type=float,
         help="The aspect ratio of the image (1.0 is square, "
-        "< 1.0 is tall, > 1.0 is wide).",
+        "< 1.0 is wide, > 1.0 is tall).",
         default=1.0,
     )
     parser.add_argument(
@@ -205,6 +205,9 @@ def render():
             f"Output file '{output_file}' is not a valid image format. "
             f"Supported formats are: {', '.join(valid_output_image_formats)}."
         )
+
+    # Close the figure we opened to get the supported filetypes
+    plt.close()
 
     # Check if the target lines is a positive integer
     if not isinstance(nlines, int) or nlines <= 0:
