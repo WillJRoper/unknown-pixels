@@ -40,6 +40,9 @@ Example usage:
 import argparse
 import os
 
+import matplotlib.pyplot as plt
+import PIL.Image as Image
+
 from unknownpixels._version import __version__
 from unknownpixels.image import UnknownPixels
 
@@ -78,12 +81,12 @@ def render():
         default=50,
     )
     parser.add_argument(
-        "--figsize",
-        "-f",
+        "--aspect",
+        "-a",
         type=float,
-        nargs=2,
-        help="Size of the figure to create.",
-        default=(8, 8),
+        help="The aspect ratio of the image (1.0 is square, "
+        "< 1.0 is tall, > 1.0 is wide).",
+        default=1.0,
     )
     parser.add_argument(
         "--title",
@@ -162,7 +165,7 @@ def render():
     output_file = args.output
     nlines = args.nlines
     preview = args.preview
-    figsize = args.figsize
+    aspect = args.aspect
     title = args.title
     log = args.log
     vmax = args.vmax
@@ -176,34 +179,31 @@ def render():
     if not os.path.exists(input_file):
         raise FileNotFoundError(f"Input file '{input_file}' does not exist.")
 
+    # Get the valid input image formats from PIL
+    input_extensions = Image.registered_extensions()
+
     # Check if the input file is a valid image format
-    valid_image_formats = [
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".bmp",
-        ".gif",
-        ".tiff",
-        ".webp",
-        ".tif",
-        ".svg",
-        ".pdf",
-    ]
+    valid_input_image_formats = list(
+        {ext for ext, fmt in input_extensions.items() if fmt in Image.OPEN}
+    )
     if not any(
-        input_file.lower().endswith(ext) for ext in valid_image_formats
+        input_file.lower().endswith(ext) for ext in valid_input_image_formats
     ):
         raise ValueError(
             f"Input file '{input_file}' is not a valid image format. "
-            f"Supported formats are: {', '.join(valid_image_formats)}."
+            f"Supported formats are: {', '.join(valid_input_image_formats)}."
         )
 
     # Check if the output file is a valid image format
+    valid_output_image_formats = list(
+        plt.gcf().canvas.get_supported_filetypes().keys()
+    )
     if output_file and not any(
-        output_file.lower().endswith(ext) for ext in valid_image_formats
+        output_file.lower().endswith(ext) for ext in valid_output_image_formats
     ):
         raise ValueError(
             f"Output file '{output_file}' is not a valid image format. "
-            f"Supported formats are: {', '.join(valid_image_formats)}."
+            f"Supported formats are: {', '.join(valid_output_image_formats)}."
         )
 
     # Check if the target lines is a positive integer
@@ -227,7 +227,7 @@ def render():
         vmax=vmax,
         vmin=vmin,
         nlines=nlines,
-        figsize=figsize,
+        aspect=aspect,
         title=title,
         outpath=output_file,
         log=log,
