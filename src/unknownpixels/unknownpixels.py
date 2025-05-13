@@ -100,7 +100,7 @@ def render():
     )
     parser.add_argument(
         "--log",
-        "-l",
+        "-L",
         action="store_true",
         help="Whether to log scale the input image.",
     )
@@ -143,6 +143,13 @@ def render():
         help="Whether to add a false perspective effect to the image.",
     )
     parser.add_argument(
+        "--linewidth",
+        "-l",
+        type=float,
+        help="The width of the lines in the plot.",
+        default=1.5,
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"%(prog)s {__version__}",
@@ -163,6 +170,7 @@ def render():
     contrast = args.contrast
     smooth_radius = args.smooth
     perspective = args.perspective
+    linewidth = args.linewidth
 
     # Check if the input file exists
     if not os.path.exists(input_file):
@@ -224,4 +232,5 @@ def render():
         outpath=output_file,
         log=log,
         perspective=perspective,
+        linewidth=linewidth,
     )
