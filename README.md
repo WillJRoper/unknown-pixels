@@ -1,12 +1,12 @@
 # unknown-pixels
 
+**unknown-pixels** is a simple Python command-line tool that transforms images into waveform art reminiscent of Joy Division's _Unknown Pleasures_ album cover.
+
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a57ab1dc-eb40-4716-8c13-ed03db5d965c" alt="Input" width="30%" />
-  <img src="https://github.com/user-attachments/assets/0fb9b396-2e40-4e47-8647-7e88c63b4dd5" alt="UP" width="30%" />
-  <img src="https://github.com/user-attachments/assets/2c223958-316d-4985-bbf3-abf1fa2929b7" alt="UP_Perspective" width="30%" />
+  <img src="https://github.com/user-attachments/assets/d88d2fb4-88d6-4678-9e30-46ef993c6b32" alt="Input" width="60%" />
+  <img src="https://github.com/user-attachments/assets/7f89f1f4-e9e5-4d50-94f8-6fef5470b787" alt="UP" width="60%" />
 </p>
 
-**unknown-pixels** is a simple Python command-line tool that transforms images into waveform art reminiscent of Joy Division's _Unknown Pleasures_ album cover.
 
 Unknown-pixels first converts the input image to grayscale, then (if necessary) it will pad the image along the smallest axis to make the image square. It then slices the image into `nlines` horizontal slices and renders each slice as a stylised "waveform", creating a unique visual representation of the original image.
 
@@ -63,3 +63,34 @@ unknown-pixels -i path/to/image.jpg -n 50 -t "Joy Division" -c 10
 ## License
 
 This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
+
+## Gallery 
+
+### Wolf Rayet Star
+
+![wolf_rayet_up](https://github.com/user-attachments/assets/8ef112c7-491b-445c-9e9e-009edd6a2f05)
+
+### Stephan's Quintet 
+
+![stephans_quintet_up](https://github.com/user-attachments/assets/8551b1d5-5c25-471c-9c45-6e5a1df3fa32)
+
+### Pillars of Creation
+
+![pillars_up](https://github.com/user-attachments/assets/2bab40e4-156f-4409-82bd-44471b4b139d)
+
+### Neptune and Triton 
+
+![neptune_up](https://github.com/user-attachments/assets/62ea1c02-f6c3-42f2-8272-7baf3b3a3850)
+
+### Dark matter Halo from FLAMINGO
+
+![flamingo_cluster_uo](https://github.com/user-attachments/assets/e513fcd2-09b6-49e3-bde6-c853c40ad5df)
+
+### Millennium Cosmic Web
+
+![cosmic_web_up](https://github.com/user-attachments/assets/23793ee8-e59b-40b6-8b0e-bcccf94fea94)
+
+
+
+
+
