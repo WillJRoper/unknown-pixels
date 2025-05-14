@@ -35,7 +35,7 @@ Example usage:
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import Normalize
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageFilter
 from scipy.ndimage import zoom
 
 
@@ -52,29 +52,40 @@ class UnknownPixels:
     `show` method.
 
     Attributes:
-        imgpath (str): The path to the image file.
         img (PIL.Image): The image object.
         shape (tuple): The shape of the image.
         arr (np.ndarray): The image as a numpy array.
 
     """
 
-    def __init__(self, imgpath):
+    def __init__(self, img):
         """Intialise the object and prepare the image for rendering.
 
         Args:
-            imgpath (str): The path to the image file.
+            img (str/Image/np.ndarry): The path to the image file, a PIL image
+                object, or a numpy array representing the image.
         """
-        self.imgpath = imgpath
+        # Intialise based on what we have been given
+        if isinstance(img, str):
+            # If we have a path to an image file, open it (we already know
+            # this is a valid image)
+            self.img = Image.open(img)
 
-        # Open the image file
-        self.img = Image.open(self.imgpath)
+        elif isinstance(img, Image.Image):
+            # If we have a PIL image object, use it directly
+            self.img = img
+
+        elif isinstance(img, np.ndarray):
+            # If we have a numpy array, convert it to a PIL image
+            self.img = Image.fromarray(img)
+
+        else:
+            raise ValueError(
+                "Invalid input type. Must be str, Image, or ndarray."
+            )
 
         # Convert to grayscale
         self.img = self.img.convert("L")
-
-        # Make the image square without distortion
-        self.img = self._pad_to_square()
 
     @property
     def shape(self):
@@ -84,6 +95,16 @@ class UnknownPixels:
             tuple: The shape of the image.
         """
         return self.img.size
+
+    @property
+    def aspect(self):
+        """Get the aspect ratio of the image.
+
+        Returns:
+            float: The aspect ratio of the image.
+        """
+        width, height = self.shape
+        return height / width
 
     @property
     def arr(self):
@@ -107,25 +128,6 @@ class UnknownPixels:
         """
         # Smooth the image
         self.img = self.img.filter(ImageFilter.GaussianBlur(radius=rad))
-
-    def _pad_to_square(self):
-        """Pad the image to make it square without distortion.
-
-        Returns:
-            PIL.Image: The padded image.
-        """
-        # Nothing to do if we're already square
-        width, height = self.shape
-        if width == height:
-            return self.img
-
-        # Calculate padding
-        if width > height:
-            padding = (0, (width - height) // 2, 0, (width - height + 1) // 2)
-        else:
-            padding = ((height - width) // 2, 0, (height - width + 1) // 2, 0)
-
-        return ImageOps.expand(self.img, border=padding, fill=0)
 
     def show(self):
         """Plot the image as a waveform representation.
@@ -198,6 +200,10 @@ class UnknownPixels:
         """
         # Extract data
         data = self.arr
+
+        # Do we have an aspect ratio to override?
+        if aspect is None:
+            aspect = self.aspect
 
         # define vmin and vmax
         vmax = np.max(data) if vmax is None else vmax
@@ -281,9 +287,6 @@ class UnknownPixels:
                 zorder=-i,
             )
             lines.append(line)
-
-        # # Set y limit (or first line is cropped because of thickness)
-        # ax.set_ylim(-2, nlines + 2)
 
         # No ticks
         ax.set_xticks([])
