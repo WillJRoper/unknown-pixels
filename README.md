@@ -41,7 +41,7 @@ This will process the input image and automatically show the waveform representa
 - `-i`, `--input`: Path to the input image file. This image can be in any PIL-compatible format.
 - `-o`, `--output`: [Optional] Path to the output file. If not specified, the output will be saved to the same directory as the input file with a .png extension.
 - `-n`, `--nlines`: [Optional] Number of lines to render along the y-axis. Default is 50.
-- `-a`, `--aspect`: [Optional] The aspect ratio of the final image, 1.0 is square, < 1.0 is wide and > 1.0 is tall. Default is 1.0.
+- `-a`, `--aspect`: [Optional] The aspect ratio of the final image, 1.0 is square, < 1.0 is wide and > 1.0 is tall. Default uses the input image's aspect ratio.
 - `-t`, `--title`: [Optional] Title to add to the image. Default is no title.
 - `-p`, `--preview`: [Optional] Show a preview of the input image after some processing.
 - `-L`, `--log`: [Optional] Whether to log scale the input image. Default is False.

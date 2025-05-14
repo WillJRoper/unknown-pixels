@@ -85,8 +85,8 @@ def render():
         "-a",
         type=float,
         help="The aspect ratio of the image (1.0 is square, "
-        "< 1.0 is wide, > 1.0 is tall).",
-        default=1.0,
+        "< 1.0 is wide, > 1.0 is tall). Default will use input aspect ratio.",
+        default=None,
     )
     parser.add_argument(
         "--title",
