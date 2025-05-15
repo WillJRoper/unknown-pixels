@@ -4,14 +4,6 @@ This module defines an entry point for injesting a image and converting it to
 a waveform representation (i.e. in the style of Joy Division's "Unknown
 Pleasures" album cover) and saving it to a file.
 
-The input file can be any format PIL supports:
-    - PNG
-    - JPEG
-    - BMP
-    - GIF
-    - TIFF
-    - WEBP
-
 Command line arguments:
 
     -i, --input: Path to the input image file.
@@ -22,13 +14,18 @@ Command line arguments:
     -f, --figsize: Size of the figure to create. Default is (8, 8).
     -t, --title: Title to add to the image. Default is no title.
     -p, --preview: Show a preview of the input image after some processing.
-    -l, --log: Whether to log scale the input image. Default is False.
+    -L, --log: Whether to log scale the input image. Default is False.
     -v, --vmax: Maximum value to use for the image. Default is None.
     -V, --vmin: Minimum value to use for the image. Default is None.
     -c, --contrast: The contrast defining the height of the peaks in the
         waveform. A contrast of 5 will place the maximum peak 5 lines above
         the flat minimum value. Default is 10.
     -r, --smooth: Radius of the Gaussian smoothing kernel. Default is None.
+    -P, --perspective: Whether to add a false perspective effect to the
+        image. Default is False.
+    -l, --linewidth: The width of the lines in the plot. Default is 1.5.
+    -a, --aspect: The aspect ratio of the image (1.0 is square, < 1.0 is
+        wide, > 1.0 is tall). Default will use input aspect ratio.
     -h, --help: Show this help message and exit.
 
 Example usage:
@@ -44,7 +41,8 @@ import matplotlib.pyplot as plt
 import PIL.Image as Image
 
 from unknownpixels._version import __version__
-from unknownpixels.image import UnknownPixels
+from unknownpixels.image import image_to_waveform
+from unknownpixels.video import video_to_waveform
 
 
 def render():
@@ -85,8 +83,8 @@ def render():
         "-a",
         type=float,
         help="The aspect ratio of the image (1.0 is square, "
-        "< 1.0 is wide, > 1.0 is tall).",
-        default=1.0,
+        "< 1.0 is wide, > 1.0 is tall). Default will use input aspect ratio.",
+        default=None,
     )
     parser.add_argument(
         "--title",
@@ -158,6 +156,17 @@ def render():
         version=f"%(prog)s {__version__}",
         help="Show the version number and exit.",
     )
+    parser.add_argument(
+        "--fps",
+        "-f",
+        type=int,
+        help=(
+            "Frames per second for the output video. If None,"
+            " the input video's fps will be used. Only applicable"
+            " for video input/output."
+        ),
+        default=None,
+    )
 
     # Parse the command-line arguments and unpack some for convenience
     args = parser.parse_args()
@@ -174,10 +183,40 @@ def render():
     smooth_radius = args.smooth
     perspective = args.perspective
     linewidth = args.linewidth
+    fps = args.fps
 
     # Check if the input file exists
     if not os.path.exists(input_file):
         raise FileNotFoundError(f"Input file '{input_file}' does not exist.")
+
+    # Define the valud video input formats
+    valid_input_video_formats = [
+        ".mp4",
+        ".avi",
+        ".mov",
+        ".mkv",
+        ".webm",
+        ".gif",
+    ]
+
+    # If the input is a video lets redirect to the video_to_waveform function
+    if input_file.lower().endswith(tuple(valid_input_video_formats)):
+        video_to_waveform(
+            input_file,
+            output_file,
+            nlines=nlines,
+            aspect=aspect,
+            title=title,
+            log=log,
+            vmax=vmax,
+            vmin=vmin,
+            contrast=contrast,
+            smooth_radius=smooth_radius,
+            perspective=perspective,
+            linewidth=linewidth,
+            fps=fps,
+        )
+        return
 
     # Get the valid input image formats from PIL
     input_extensions = Image.registered_extensions()
@@ -213,27 +252,19 @@ def render():
     if not isinstance(nlines, int) or nlines <= 0:
         raise ValueError(f"Target lines '{nlines}' is not a positive integer.")
 
-    # Create an instance of the UnknownPixels class
-    up = UnknownPixels(input_file)
-
-    # Show a preview of the input image after some processing if requested
-    if preview:
-        up.show()
-
-    # If the smooth radius is set smooth the image
-    if smooth_radius is not None:
-        up.smooth_image(smooth_radius)
-
-    # Render the image to a waveform representation
-    up.plot_unknown_pleasures(
-        contrast=contrast,
-        vmax=vmax,
-        vmin=vmin,
+    image_to_waveform(
+        input_file,
+        output_file,
         nlines=nlines,
         aspect=aspect,
         title=title,
-        outpath=output_file,
+        preview=preview,
         log=log,
+        vmax=vmax,
+        vmin=vmin,
+        contrast=contrast,
+        smooth_radius=smooth_radius,
         perspective=perspective,
         linewidth=linewidth,
+        show=True,
     )

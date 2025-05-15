@@ -34,8 +34,9 @@ Example usage:
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.colors import Normalize
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageFilter
 from scipy.ndimage import zoom
 
 
@@ -52,29 +53,40 @@ class UnknownPixels:
     `show` method.
 
     Attributes:
-        imgpath (str): The path to the image file.
         img (PIL.Image): The image object.
         shape (tuple): The shape of the image.
         arr (np.ndarray): The image as a numpy array.
 
     """
 
-    def __init__(self, imgpath):
+    def __init__(self, img):
         """Intialise the object and prepare the image for rendering.
 
         Args:
-            imgpath (str): The path to the image file.
+            img (str/Image/np.ndarry): The path to the image file, a PIL image
+                object, or a numpy array representing the image.
         """
-        self.imgpath = imgpath
+        # Intialise based on what we have been given
+        if isinstance(img, str):
+            # If we have a path to an image file, open it (we already know
+            # this is a valid image)
+            self.img = Image.open(img)
 
-        # Open the image file
-        self.img = Image.open(self.imgpath)
+        elif isinstance(img, Image.Image):
+            # If we have a PIL image object, use it directly
+            self.img = img
+
+        elif isinstance(img, np.ndarray):
+            # If we have a numpy array, convert it to a PIL image
+            self.img = Image.fromarray(img)
+
+        else:
+            raise ValueError(
+                "Invalid input type. Must be str, Image, or ndarray."
+            )
 
         # Convert to grayscale
         self.img = self.img.convert("L")
-
-        # Make the image square without distortion
-        self.img = self._pad_to_square()
 
     @property
     def shape(self):
@@ -84,6 +96,16 @@ class UnknownPixels:
             tuple: The shape of the image.
         """
         return self.img.size
+
+    @property
+    def aspect(self):
+        """Get the aspect ratio of the image.
+
+        Returns:
+            float: The aspect ratio of the image.
+        """
+        width, height = self.shape
+        return height / width
 
     @property
     def arr(self):
@@ -107,25 +129,6 @@ class UnknownPixels:
         """
         # Smooth the image
         self.img = self.img.filter(ImageFilter.GaussianBlur(radius=rad))
-
-    def _pad_to_square(self):
-        """Pad the image to make it square without distortion.
-
-        Returns:
-            PIL.Image: The padded image.
-        """
-        # Nothing to do if we're already square
-        width, height = self.shape
-        if width == height:
-            return self.img
-
-        # Calculate padding
-        if width > height:
-            padding = (0, (width - height) // 2, 0, (width - height + 1) // 2)
-        else:
-            padding = ((height - width) // 2, 0, (height - width + 1) // 2, 0)
-
-        return ImageOps.expand(self.img, border=padding, fill=0)
 
     def show(self):
         """Plot the image as a waveform representation.
@@ -158,6 +161,8 @@ class UnknownPixels:
         log,
         perspective,
         linewidth,
+        show,
+        return_array,
     ):
         """Plot the image in the style of Unknown Pleasures.
 
@@ -195,9 +200,18 @@ class UnknownPixels:
                 Default is False.
             linewidth (float):
                 The width of the lines in the plot.
+            show (bool):
+                Whether to show the plot.
+            return_array (bool):
+                Whether to return the output image as a numpy array.
+                Default is False.
         """
         # Extract data
         data = self.arr
+
+        # Do we have an aspect ratio to override?
+        if aspect is None:
+            aspect = self.aspect
 
         # define vmin and vmax
         vmax = np.max(data) if vmax is None else vmax
@@ -282,9 +296,6 @@ class UnknownPixels:
             )
             lines.append(line)
 
-        # # Set y limit (or first line is cropped because of thickness)
-        # ax.set_ylim(-2, nlines + 2)
-
         # No ticks
         ax.set_xticks([])
         ax.set_yticks([])
@@ -311,4 +322,113 @@ class UnknownPixels:
             )
 
         # Show the plot
-        plt.show()
+        if show:
+            plt.show()
+
+        # If the user asked for the raw array, grab it
+        if return_array:
+            # Make sure the figure is rendered
+            canvas = FigureCanvas(fig)
+            canvas.draw()
+
+            # Get the width and height of the canvas
+            w, h = fig.canvas.get_width_height()
+
+            # Get the RGBA buffer from the figure
+            buf = canvas.tostring_rgb()
+
+            # Convert the buffer to a numpy array
+            arr = np.frombuffer(buf, dtype=np.uint8)
+
+            # Reshape the array to the correct dimensions
+            arr = arr.reshape((h, w, 3))
+
+        else:
+            # No array requested, just set to None
+            arr = None
+
+        plt.close(fig)
+
+        return arr
+
+
+def image_to_waveform(
+    input_file,
+    output_file=None,
+    smooth_radius=None,
+    contrast=1.0,
+    vmax=None,
+    vmin=None,
+    nlines=100,
+    aspect=None,
+    title=None,
+    log=False,
+    perspective=False,
+    linewidth=1.0,
+    preview=False,
+    show=False,
+    return_array=False,
+):
+    """Convert an image to its waveform representation.
+
+    This function takes an image file as input and converts it to a waveform
+    representation using the UnknownPixels class. The resulting image can be
+    saved to a file or displayed on the screen.
+
+    Args:
+        input_file (str/Image/np.ndarry): The path to the input image file,
+            a PIL image object, or a numpy array representing the image.
+        output_file (str): The path to save the output image file. If None,
+            the image is not saved.
+        smooth_radius (int): The radius of the Gaussian filter to apply to
+            the image. If None, no smoothing is applied.
+        contrast (float): The contrast to apply to the image. Default is 1.0.
+        vmax (float): The maximum value to use for the image. If None, the
+            maximum value in the image is used.
+        vmin (float): The minimum value to use for the image. If None, the
+            minimum value in the image is used.
+        nlines (int): The number of individual lines to use along the y-axis.
+        aspect (float): The aspect ratio of the image. This is the ratio of
+            the width to the height of the image.
+        title (str): The title to add to the image. If None, no title is
+            added.
+        log (bool): Whether to log scale the input image. Default is False.
+        perspective (bool): Whether to add a false perspective effect to
+            the image. Default is False.
+        linewidth (float): The width of the lines in the plot. Default is 1.0.
+        preview (bool): Whether to show a preview of the input image after
+            some processing. Default is False.
+        show (bool): Whether to show the plot. Default is False.
+        return_array (bool): Whether to return the output image as a numpy
+            array. Default is False.
+
+    Returns:
+        np.ndarray: The waveform representation of the image, only if
+            return_array is True.
+    """
+    # Create an instance of the UnknownPixels class
+    up = UnknownPixels(input_file)
+
+    # Show a preview of the input image after some processing if requested
+    if preview:
+        up.show()
+
+    # If the smooth radius is set smooth the image
+    if smooth_radius is not None:
+        up.smooth_image(smooth_radius)
+
+    # Render the image to a waveform representation
+    return up.plot_unknown_pleasures(
+        contrast=contrast,
+        vmax=vmax,
+        vmin=vmin,
+        nlines=nlines,
+        aspect=aspect,
+        title=title,
+        outpath=output_file,
+        log=log,
+        perspective=perspective,
+        linewidth=linewidth,
+        show=show,
+        return_array=return_array,
+    )
