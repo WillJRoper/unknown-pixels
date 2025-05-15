@@ -15,7 +15,7 @@ Unknown-pixels first converts the input image to grayscale, then (if necessary) 
 Ensure you have Python 3.8 or higher installed. Then, install `unknownpixels` using pip:
 
 ```bash
-pip install unknownpixels
+pip install unknown-pixels
 ```
 
 Or clone the repo and run
