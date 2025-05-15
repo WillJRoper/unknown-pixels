@@ -73,13 +73,22 @@ This project is licensed under the GNU General Public License v3.0. See the [LIC
 
 ## Gallery 
 
-### Wolf Rayet Star
-
-![wolf_rayet_up](https://github.com/user-attachments/assets/8ef112c7-491b-445c-9e9e-009edd6a2f05)
-
 ### Stephan's Quintet 
 
 ![stephans_quintet_up](https://github.com/user-attachments/assets/8551b1d5-5c25-471c-9c45-6e5a1df3fa32)
+
+### M87 
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/372dba0d-8157-48ec-bf53-cd0508bd1402" alt="Input" width="100%" />
+</p>
+
+
+Courtesy of Robyn Munoz.
+
+### Wolf Rayet Star
+
+![wolf_rayet_up](https://github.com/user-attachments/assets/8ef112c7-491b-445c-9e9e-009edd6a2f05)
 
 ### Pillars of Creation
 
