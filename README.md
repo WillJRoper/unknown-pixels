@@ -12,7 +12,7 @@ Unknown-pixels first converts the input image to grayscale, then (if necessary) 
 
 ## Installation
 
-Ensure you have Python 3.8 or higher installed. Then, install `unknownpixels` using pip:
+Ensure you have Python 3.8 or higher installed. Then, install `unknown-pixels` using pip:
 
 ```bash
 pip install unknown-pixels
