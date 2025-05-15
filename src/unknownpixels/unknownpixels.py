@@ -156,6 +156,17 @@ def render():
         version=f"%(prog)s {__version__}",
         help="Show the version number and exit.",
     )
+    parser.add_argument(
+        "--fps",
+        "-f",
+        type=int,
+        help=(
+            "Frames per second for the output video. If None,"
+            " the input video's fps will be used. Only applicable"
+            " for video input/output."
+        ),
+        default=None,
+    )
 
     # Parse the command-line arguments and unpack some for convenience
     args = parser.parse_args()
@@ -172,6 +183,7 @@ def render():
     smooth_radius = args.smooth
     perspective = args.perspective
     linewidth = args.linewidth
+    fps = args.fps
 
     # Check if the input file exists
     if not os.path.exists(input_file):
@@ -202,6 +214,7 @@ def render():
             smooth_radius=smooth_radius,
             perspective=perspective,
             linewidth=linewidth,
+            fps=fps,
         )
         return
 
